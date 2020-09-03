@@ -50,18 +50,19 @@ impl From<SysError> for Error {
 }
 
 fn main() -> Result<(), Error> {
-    // remove below examples and write your code here
-
+    debug!("start lockscript");
     let script = load_script()?;
-    let args = script.args().as_bytes();
+    let args = script.args().raw_data();
     debug!("script args is {:?}", args);
 
     // check the script arg is equal with the first output typescript hash
     // in this way, we can delegate the verify logic to the typescript
     let script_hash = load_cell_type_hash(0, Source::Output)?.unwrap();
+    debug!("script_hash: {:?}", script_hash);
     if args.as_ref() != &script_hash {
         return Err(Error::UnlockFailed);
     }
 
+    debug!("finish lockscript");
     Ok(())
 }

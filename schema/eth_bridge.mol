@@ -1,7 +1,7 @@
 array Hash [byte; 32];
 vector Bytes <byte>;
 array Uint64 [byte; 8];
-array Uint256 [byte; 32];
+array Uint128 [byte; 16];
 
 struct Record {
     block_hash: Hash,
@@ -17,7 +17,7 @@ table CellData {
 
 table ETHSpvProof {
     record: Record,
-    amount: Uint256,
+    amount: Uint128,
     to_lockscript_hash: Hash,
     proof: Bytes,
 }

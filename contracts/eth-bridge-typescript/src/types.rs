@@ -1073,8 +1073,8 @@ impl molecule::prelude::Builder for Uint64Builder {
     }
 }
 #[derive(Clone)]
-pub struct Uint256(molecule::bytes::Bytes);
-impl ::core::fmt::LowerHex for Uint256 {
+pub struct Uint128(molecule::bytes::Bytes);
+impl ::core::fmt::LowerHex for Uint128 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         use molecule::hex_string;
         if f.alternate() {
@@ -1083,31 +1083,28 @@ impl ::core::fmt::LowerHex for Uint256 {
         write!(f, "{}", hex_string(self.as_slice()))
     }
 }
-impl ::core::fmt::Debug for Uint256 {
+impl ::core::fmt::Debug for Uint128 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         write!(f, "{}({:#x})", Self::NAME, self)
     }
 }
-impl ::core::fmt::Display for Uint256 {
+impl ::core::fmt::Display for Uint128 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         use molecule::hex_string;
         let raw_data = hex_string(&self.raw_data());
         write!(f, "{}(0x{})", Self::NAME, raw_data)
     }
 }
-impl ::core::default::Default for Uint256 {
+impl ::core::default::Default for Uint128 {
     fn default() -> Self {
-        let v: Vec<u8> = vec![
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0,
-        ];
-        Uint256::new_unchecked(v.into())
+        let v: Vec<u8> = vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        Uint128::new_unchecked(v.into())
     }
 }
-impl Uint256 {
-    pub const TOTAL_SIZE: usize = 32;
+impl Uint128 {
+    pub const TOTAL_SIZE: usize = 16;
     pub const ITEM_SIZE: usize = 1;
-    pub const ITEM_COUNT: usize = 32;
+    pub const ITEM_COUNT: usize = 16;
     pub fn nth0(&self) -> Byte {
         Byte::new_unchecked(self.0.slice(0..1))
     }
@@ -1156,66 +1153,18 @@ impl Uint256 {
     pub fn nth15(&self) -> Byte {
         Byte::new_unchecked(self.0.slice(15..16))
     }
-    pub fn nth16(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(16..17))
-    }
-    pub fn nth17(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(17..18))
-    }
-    pub fn nth18(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(18..19))
-    }
-    pub fn nth19(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(19..20))
-    }
-    pub fn nth20(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(20..21))
-    }
-    pub fn nth21(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(21..22))
-    }
-    pub fn nth22(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(22..23))
-    }
-    pub fn nth23(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(23..24))
-    }
-    pub fn nth24(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(24..25))
-    }
-    pub fn nth25(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(25..26))
-    }
-    pub fn nth26(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(26..27))
-    }
-    pub fn nth27(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(27..28))
-    }
-    pub fn nth28(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(28..29))
-    }
-    pub fn nth29(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(29..30))
-    }
-    pub fn nth30(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(30..31))
-    }
-    pub fn nth31(&self) -> Byte {
-        Byte::new_unchecked(self.0.slice(31..32))
-    }
     pub fn raw_data(&self) -> molecule::bytes::Bytes {
         self.as_bytes()
     }
-    pub fn as_reader<'r>(&'r self) -> Uint256Reader<'r> {
-        Uint256Reader::new_unchecked(self.as_slice())
+    pub fn as_reader<'r>(&'r self) -> Uint128Reader<'r> {
+        Uint128Reader::new_unchecked(self.as_slice())
     }
 }
-impl molecule::prelude::Entity for Uint256 {
-    type Builder = Uint256Builder;
-    const NAME: &'static str = "Uint256";
+impl molecule::prelude::Entity for Uint128 {
+    type Builder = Uint128Builder;
+    const NAME: &'static str = "Uint128";
     fn new_unchecked(data: molecule::bytes::Bytes) -> Self {
-        Uint256(data)
+        Uint128(data)
     }
     fn as_bytes(&self) -> molecule::bytes::Bytes {
         self.0.clone()
@@ -1224,10 +1173,10 @@ impl molecule::prelude::Entity for Uint256 {
         &self.0[..]
     }
     fn from_slice(slice: &[u8]) -> molecule::error::VerificationResult<Self> {
-        Uint256Reader::from_slice(slice).map(|reader| reader.to_entity())
+        Uint128Reader::from_slice(slice).map(|reader| reader.to_entity())
     }
     fn from_compatible_slice(slice: &[u8]) -> molecule::error::VerificationResult<Self> {
-        Uint256Reader::from_compatible_slice(slice).map(|reader| reader.to_entity())
+        Uint128Reader::from_compatible_slice(slice).map(|reader| reader.to_entity())
     }
     fn new_builder() -> Self::Builder {
         ::core::default::Default::default()
@@ -1250,28 +1199,12 @@ impl molecule::prelude::Entity for Uint256 {
             self.nth13(),
             self.nth14(),
             self.nth15(),
-            self.nth16(),
-            self.nth17(),
-            self.nth18(),
-            self.nth19(),
-            self.nth20(),
-            self.nth21(),
-            self.nth22(),
-            self.nth23(),
-            self.nth24(),
-            self.nth25(),
-            self.nth26(),
-            self.nth27(),
-            self.nth28(),
-            self.nth29(),
-            self.nth30(),
-            self.nth31(),
         ])
     }
 }
 #[derive(Clone, Copy)]
-pub struct Uint256Reader<'r>(&'r [u8]);
-impl<'r> ::core::fmt::LowerHex for Uint256Reader<'r> {
+pub struct Uint128Reader<'r>(&'r [u8]);
+impl<'r> ::core::fmt::LowerHex for Uint128Reader<'r> {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         use molecule::hex_string;
         if f.alternate() {
@@ -1280,22 +1213,22 @@ impl<'r> ::core::fmt::LowerHex for Uint256Reader<'r> {
         write!(f, "{}", hex_string(self.as_slice()))
     }
 }
-impl<'r> ::core::fmt::Debug for Uint256Reader<'r> {
+impl<'r> ::core::fmt::Debug for Uint128Reader<'r> {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         write!(f, "{}({:#x})", Self::NAME, self)
     }
 }
-impl<'r> ::core::fmt::Display for Uint256Reader<'r> {
+impl<'r> ::core::fmt::Display for Uint128Reader<'r> {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         use molecule::hex_string;
         let raw_data = hex_string(&self.raw_data());
         write!(f, "{}(0x{})", Self::NAME, raw_data)
     }
 }
-impl<'r> Uint256Reader<'r> {
-    pub const TOTAL_SIZE: usize = 32;
+impl<'r> Uint128Reader<'r> {
+    pub const TOTAL_SIZE: usize = 16;
     pub const ITEM_SIZE: usize = 1;
-    pub const ITEM_COUNT: usize = 32;
+    pub const ITEM_COUNT: usize = 16;
     pub fn nth0(&self) -> ByteReader<'r> {
         ByteReader::new_unchecked(&self.as_slice()[0..1])
     }
@@ -1344,66 +1277,18 @@ impl<'r> Uint256Reader<'r> {
     pub fn nth15(&self) -> ByteReader<'r> {
         ByteReader::new_unchecked(&self.as_slice()[15..16])
     }
-    pub fn nth16(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[16..17])
-    }
-    pub fn nth17(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[17..18])
-    }
-    pub fn nth18(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[18..19])
-    }
-    pub fn nth19(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[19..20])
-    }
-    pub fn nth20(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[20..21])
-    }
-    pub fn nth21(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[21..22])
-    }
-    pub fn nth22(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[22..23])
-    }
-    pub fn nth23(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[23..24])
-    }
-    pub fn nth24(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[24..25])
-    }
-    pub fn nth25(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[25..26])
-    }
-    pub fn nth26(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[26..27])
-    }
-    pub fn nth27(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[27..28])
-    }
-    pub fn nth28(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[28..29])
-    }
-    pub fn nth29(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[29..30])
-    }
-    pub fn nth30(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[30..31])
-    }
-    pub fn nth31(&self) -> ByteReader<'r> {
-        ByteReader::new_unchecked(&self.as_slice()[31..32])
-    }
     pub fn raw_data(&self) -> &'r [u8] {
         self.as_slice()
     }
 }
-impl<'r> molecule::prelude::Reader<'r> for Uint256Reader<'r> {
-    type Entity = Uint256;
-    const NAME: &'static str = "Uint256Reader";
+impl<'r> molecule::prelude::Reader<'r> for Uint128Reader<'r> {
+    type Entity = Uint128;
+    const NAME: &'static str = "Uint128Reader";
     fn to_entity(&self) -> Self::Entity {
         Self::Entity::new_unchecked(self.as_slice().to_owned().into())
     }
     fn new_unchecked(slice: &'r [u8]) -> Self {
-        Uint256Reader(slice)
+        Uint128Reader(slice)
     }
     fn as_slice(&self) -> &'r [u8] {
         self.0
@@ -1417,31 +1302,15 @@ impl<'r> molecule::prelude::Reader<'r> for Uint256Reader<'r> {
         Ok(())
     }
 }
-pub struct Uint256Builder(pub(crate) [Byte; 32]);
-impl ::core::fmt::Debug for Uint256Builder {
+pub struct Uint128Builder(pub(crate) [Byte; 16]);
+impl ::core::fmt::Debug for Uint128Builder {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         write!(f, "{}({:?})", Self::NAME, &self.0[..])
     }
 }
-impl ::core::default::Default for Uint256Builder {
+impl ::core::default::Default for Uint128Builder {
     fn default() -> Self {
-        Uint256Builder([
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
-            Byte::default(),
+        Uint128Builder([
             Byte::default(),
             Byte::default(),
             Byte::default(),
@@ -1461,11 +1330,11 @@ impl ::core::default::Default for Uint256Builder {
         ])
     }
 }
-impl Uint256Builder {
-    pub const TOTAL_SIZE: usize = 32;
+impl Uint128Builder {
+    pub const TOTAL_SIZE: usize = 16;
     pub const ITEM_SIZE: usize = 1;
-    pub const ITEM_COUNT: usize = 32;
-    pub fn set(mut self, v: [Byte; 32]) -> Self {
+    pub const ITEM_COUNT: usize = 16;
+    pub fn set(mut self, v: [Byte; 16]) -> Self {
         self.0 = v;
         self
     }
@@ -1533,74 +1402,10 @@ impl Uint256Builder {
         self.0[15] = v;
         self
     }
-    pub fn nth16(mut self, v: Byte) -> Self {
-        self.0[16] = v;
-        self
-    }
-    pub fn nth17(mut self, v: Byte) -> Self {
-        self.0[17] = v;
-        self
-    }
-    pub fn nth18(mut self, v: Byte) -> Self {
-        self.0[18] = v;
-        self
-    }
-    pub fn nth19(mut self, v: Byte) -> Self {
-        self.0[19] = v;
-        self
-    }
-    pub fn nth20(mut self, v: Byte) -> Self {
-        self.0[20] = v;
-        self
-    }
-    pub fn nth21(mut self, v: Byte) -> Self {
-        self.0[21] = v;
-        self
-    }
-    pub fn nth22(mut self, v: Byte) -> Self {
-        self.0[22] = v;
-        self
-    }
-    pub fn nth23(mut self, v: Byte) -> Self {
-        self.0[23] = v;
-        self
-    }
-    pub fn nth24(mut self, v: Byte) -> Self {
-        self.0[24] = v;
-        self
-    }
-    pub fn nth25(mut self, v: Byte) -> Self {
-        self.0[25] = v;
-        self
-    }
-    pub fn nth26(mut self, v: Byte) -> Self {
-        self.0[26] = v;
-        self
-    }
-    pub fn nth27(mut self, v: Byte) -> Self {
-        self.0[27] = v;
-        self
-    }
-    pub fn nth28(mut self, v: Byte) -> Self {
-        self.0[28] = v;
-        self
-    }
-    pub fn nth29(mut self, v: Byte) -> Self {
-        self.0[29] = v;
-        self
-    }
-    pub fn nth30(mut self, v: Byte) -> Self {
-        self.0[30] = v;
-        self
-    }
-    pub fn nth31(mut self, v: Byte) -> Self {
-        self.0[31] = v;
-        self
-    }
 }
-impl molecule::prelude::Builder for Uint256Builder {
-    type Entity = Uint256;
-    const NAME: &'static str = "Uint256Builder";
+impl molecule::prelude::Builder for Uint128Builder {
+    type Entity = Uint128;
+    const NAME: &'static str = "Uint128Builder";
     fn expected_length(&self) -> usize {
         Self::TOTAL_SIZE
     }
@@ -1621,29 +1426,13 @@ impl molecule::prelude::Builder for Uint256Builder {
         writer.write_all(self.0[13].as_slice())?;
         writer.write_all(self.0[14].as_slice())?;
         writer.write_all(self.0[15].as_slice())?;
-        writer.write_all(self.0[16].as_slice())?;
-        writer.write_all(self.0[17].as_slice())?;
-        writer.write_all(self.0[18].as_slice())?;
-        writer.write_all(self.0[19].as_slice())?;
-        writer.write_all(self.0[20].as_slice())?;
-        writer.write_all(self.0[21].as_slice())?;
-        writer.write_all(self.0[22].as_slice())?;
-        writer.write_all(self.0[23].as_slice())?;
-        writer.write_all(self.0[24].as_slice())?;
-        writer.write_all(self.0[25].as_slice())?;
-        writer.write_all(self.0[26].as_slice())?;
-        writer.write_all(self.0[27].as_slice())?;
-        writer.write_all(self.0[28].as_slice())?;
-        writer.write_all(self.0[29].as_slice())?;
-        writer.write_all(self.0[30].as_slice())?;
-        writer.write_all(self.0[31].as_slice())?;
         Ok(())
     }
     fn build(&self) -> Self::Entity {
         let mut inner = Vec::with_capacity(self.expected_length());
         self.write(&mut inner)
             .unwrap_or_else(|_| panic!("{} build should be ok", Self::NAME));
-        Uint256::new_unchecked(inner.into())
+        Uint128::new_unchecked(inner.into())
     }
 }
 #[derive(Clone)]
@@ -2392,11 +2181,10 @@ impl ::core::fmt::Display for ETHSpvProof {
 impl ::core::default::Default for ETHSpvProof {
     fn default() -> Self {
         let v: Vec<u8> = vec![
-            128, 0, 0, 0, 20, 0, 0, 0, 60, 0, 0, 0, 92, 0, 0, 0, 124, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            112, 0, 0, 0, 20, 0, 0, 0, 60, 0, 0, 0, 76, 0, 0, 0, 108, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ];
         ETHSpvProof::new_unchecked(v.into())
     }
@@ -2425,11 +2213,11 @@ impl ETHSpvProof {
         let end = molecule::unpack_number(&slice[8..]) as usize;
         Record::new_unchecked(self.0.slice(start..end))
     }
-    pub fn amount(&self) -> Uint256 {
+    pub fn amount(&self) -> Uint128 {
         let slice = self.as_slice();
         let start = molecule::unpack_number(&slice[8..]) as usize;
         let end = molecule::unpack_number(&slice[12..]) as usize;
-        Uint256::new_unchecked(self.0.slice(start..end))
+        Uint128::new_unchecked(self.0.slice(start..end))
     }
     pub fn to_lockscript_hash(&self) -> Hash {
         let slice = self.as_slice();
@@ -2539,11 +2327,11 @@ impl<'r> ETHSpvProofReader<'r> {
         let end = molecule::unpack_number(&slice[8..]) as usize;
         RecordReader::new_unchecked(&self.as_slice()[start..end])
     }
-    pub fn amount(&self) -> Uint256Reader<'r> {
+    pub fn amount(&self) -> Uint128Reader<'r> {
         let slice = self.as_slice();
         let start = molecule::unpack_number(&slice[8..]) as usize;
         let end = molecule::unpack_number(&slice[12..]) as usize;
-        Uint256Reader::new_unchecked(&self.as_slice()[start..end])
+        Uint128Reader::new_unchecked(&self.as_slice()[start..end])
     }
     pub fn to_lockscript_hash(&self) -> HashReader<'r> {
         let slice = self.as_slice();
@@ -2614,7 +2402,7 @@ impl<'r> molecule::prelude::Reader<'r> for ETHSpvProofReader<'r> {
             return ve!(Self, OffsetsNotMatch);
         }
         RecordReader::verify(&slice[offsets[0]..offsets[1]], compatible)?;
-        Uint256Reader::verify(&slice[offsets[1]..offsets[2]], compatible)?;
+        Uint128Reader::verify(&slice[offsets[1]..offsets[2]], compatible)?;
         HashReader::verify(&slice[offsets[2]..offsets[3]], compatible)?;
         BytesReader::verify(&slice[offsets[3]..offsets[4]], compatible)?;
         Ok(())
@@ -2623,7 +2411,7 @@ impl<'r> molecule::prelude::Reader<'r> for ETHSpvProofReader<'r> {
 #[derive(Debug, Default)]
 pub struct ETHSpvProofBuilder {
     pub(crate) record: Record,
-    pub(crate) amount: Uint256,
+    pub(crate) amount: Uint128,
     pub(crate) to_lockscript_hash: Hash,
     pub(crate) proof: Bytes,
 }
@@ -2633,7 +2421,7 @@ impl ETHSpvProofBuilder {
         self.record = v;
         self
     }
-    pub fn amount(mut self, v: Uint256) -> Self {
+    pub fn amount(mut self, v: Uint128) -> Self {
         self.amount = v;
         self
     }

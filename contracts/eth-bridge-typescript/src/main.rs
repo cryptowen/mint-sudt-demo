@@ -71,8 +71,8 @@ const SUDT_CODE_HASH: [u8; 32] = [
     92, 90, 228, 42, 157, 125, 99, 215, 125, 244, 25,
 ];
 const LOCKSCRIPT_CODE_HASH: [u8; 32] = [
-    225, 227, 84, 214, 214, 67, 173, 66, 114, 77, 64, 150, 126, 51, 73, 132, 83, 78, 3, 103, 64,
-    92, 90, 228, 42, 157, 125, 99, 215, 125, 244, 25,
+    254, 15, 52, 255, 185, 128, 157, 54, 14, 103, 5, 73, 112, 230, 168, 7, 133, 58, 2, 209, 126,
+    35, 204, 119, 232, 77, 221, 67, 234, 36, 187, 227,
 ];
 
 fn verify_init() -> Result<(), Error> {
@@ -99,6 +99,7 @@ fn verify_proof(_data: &[u8], _witness: &[u8]) -> Result<(), Error> {
 }
 
 fn verify_transfer() -> Result<(), Error> {
+    debug!("start verify transfer");
     // load and parse witness
     let witness_args = load_witness_args(0, Source::Input)?.input_type();
     if witness_args.is_none() {
@@ -109,7 +110,6 @@ fn verify_transfer() -> Result<(), Error> {
         return Err(Error::InvalidWitnessEncoding);
     }
     let proof_reader = types::ETHSpvProofReader::new_unchecked(&witness_args);
-    debug!("proof_reader: {:?}", proof_reader);
 
     // load cell data transfer is valid.
     // The proof in this tx was not handled before, and after this tx, we add the record into the cell data
@@ -182,6 +182,14 @@ fn main() -> Result<(), Error> {
         return Err(Error::InvalidOutput);
     }
     let output_lock = load_cell_lock(0, Source::Output)?;
+    debug!(
+        "output_lock.code_hash().raw_data().as_ref(): {:?}",
+        output_lock.code_hash().raw_data().as_ref()
+    );
+    debug!(
+        "LOCKSCRIPT_CODE_HASH.as_ref(): {:?}",
+        LOCKSCRIPT_CODE_HASH.as_ref()
+    );
     if !(output_lock.code_hash().raw_data().as_ref() == LOCKSCRIPT_CODE_HASH.as_ref()
         && output_lock.args().raw_data().as_ref() == output_typescript_hash.as_ref()
         && output_lock.hash_type() == 0u8.into())
