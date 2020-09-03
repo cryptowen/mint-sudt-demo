@@ -94,6 +94,8 @@ fn verify_init() -> Result<(), Error> {
 }
 
 fn verify_proof(_data: &[u8], _witness: &[u8]) -> Result<(), Error> {
+    // use the cell data to verify spv proof in witness.
+    // we just leave it blank here.
     // you can change it to any logic you want to verify the proof
     Ok(())
 }
@@ -111,7 +113,6 @@ fn verify_transfer() -> Result<(), Error> {
     }
     let proof_reader = types::ETHSpvProofReader::new_unchecked(&witness_args);
 
-    // load cell data transfer is valid.
     // The proof in this tx was not handled before, and after this tx, we add the record into the cell data
     let input_data = load_cell_data(0, Source::Input)?;
     if types::CellDataReader::verify(&input_data, false).is_err() {
@@ -156,10 +157,12 @@ fn verify_transfer() -> Result<(), Error> {
     {
         return Err(Error::InvalidOutput);
     }
+    // ensure the minted token is for the lockscript specified in witness
     let mint_token_lock_hash = load_cell_lock_hash(1, Source::Output)?;
     if mint_token_lock_hash != proof_reader.to_lockscript_hash().raw_data() {
         return Err(Error::InvalidToLockHash);
     }
+    // ensure the mint amount equals that specified in witness
     let mint_token_data = load_cell_data(1, Source::Output)?;
     if mint_token_data != proof_reader.amount().raw_data() {
         return Err(Error::InvalidMintAmount);
