@@ -1,0 +1,23 @@
+array Hash [byte; 32];
+vector Bytes <byte>;
+array Uint64 [byte; 8];
+array Uint256 [byte; 32];
+
+struct Record {
+    block_hash: Hash,
+    tx_index: Uint64,
+}
+
+vector Records <Record>;
+
+table CellData {
+    eth_light_client_data: Bytes,
+    records: Records,
+}
+
+table ETHSpvProof {
+    record: Record,
+    amount: Uint256,
+    to_lockscript_hash: Hash,
+    proof: Bytes,
+}
