@@ -1,7 +1,6 @@
 use super::*;
 use ckb_testtool::{builtin::ALWAYS_SUCCESS, context::Context};
 use ckb_tool::ckb_types::{bytes::Bytes, core::TransactionBuilder, packed::*, prelude::*};
-use primitive_types::U256;
 
 const MAX_CYCLES: u64 = 10_000_000;
 
